@@ -43,8 +43,11 @@ class Handler(object):
         size = os.path.getsize(file_path)
         return stream, size
 
-    def list(self):
-        return os.listdir(self.__storage_path)
+    def list(self) -> typing.List[typing.Tuple[str, int]]:
+        files = list()
+        for file in os.listdir(self.__storage_path):
+            files.append((file, os.path.getsize(os.path.join(self.__storage_path, file))))
+        return files
 
     def delete(self, name: str):
         os.remove(os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension)))
