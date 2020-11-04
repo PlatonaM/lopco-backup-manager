@@ -15,10 +15,10 @@
 """
 
 
-__all__ = ("Backup", )
+__all__ = ("Export",)
 
 
-class Backup:
+class Export:
     file = "file"
     time = "time"
     size = "size"
