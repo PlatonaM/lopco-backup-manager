@@ -73,9 +73,10 @@ class Handler(threading.Thread):
 
     def createExport(self):
         try:
-            stream = io.BytesIO()
-            json.dump(self.__getData(), stream)
-            self.__st_handler.write(stream, "{}Z".format(datetime.datetime.utcnow().isoformat()))
+            self.__st_handler.write(
+                io.BytesIO(json.dumps(self.__getData()).encode()),
+                "{}Z".format(datetime.datetime.utcnow().isoformat())
+            )
         except Exception as ex:
             raise CreateExportError("creating export failed - {}".format(ex))
 
