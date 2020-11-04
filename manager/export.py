@@ -67,7 +67,7 @@ class Handler(threading.Thread):
             if not resp.ok:
                 raise RuntimeError("could not get data from '{}' - {}".format(endpoint, resp.status_code))
             data[endpoint] = dict()
-            for key, value in resp.json():
+            for key, value in resp.json().items():
                 data[endpoint][key] = json.loads(value)
         return data
 
