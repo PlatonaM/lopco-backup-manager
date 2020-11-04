@@ -57,4 +57,4 @@ class Conf:
 
 conf = Conf(load=False)
 
-storage_path = "/backups"
+storage_path = "/exports"
