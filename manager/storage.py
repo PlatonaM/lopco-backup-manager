@@ -15,32 +15,12 @@
 """
 
 
-__all__ = ("Handler", "StorageError", "WriteError", "ReadError", "ListError", "DeleteError")
+__all__ = ("Handler", )
 
 
 import typing
 import os
 import io
-
-
-class StorageError(Exception):
-    pass
-
-
-class WriteError(StorageError):
-    pass
-
-
-class ReadError(StorageError):
-    pass
-
-
-class ListError(StorageError):
-    pass
-
-
-class DeleteError(StorageError):
-    pass
 
 
 class Handler(object):
@@ -50,35 +30,21 @@ class Handler(object):
         self.__chunk_size_bytes = chunk_size_bytes
 
     def write(self, stream: io.BytesIO, name: str):
-        try:
-            with open(os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension)), 'wb') as file:
-                while True:
-                    chunk = stream.read(self.__chunk_size_bytes)
-                    if not chunk:
-                        break
-                    file.write(chunk)
-        except Exception as ex:
-            raise WriteError("writing '{}' failed - {}".format("{}.{}".format(name, self.__extension), ex))
+        with open(os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension)), 'wb') as file:
+            while True:
+                chunk = stream.read(self.__chunk_size_bytes)
+                if not chunk:
+                    break
+                file.write(chunk)
 
     def read(self, name: str) -> typing.Tuple[typing.BinaryIO, int]:
-        try:
-            file_path = os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension))
-            stream = open(file_path, 'rb')
-            size = os.path.getsize(file_path)
-            return stream, size
-        except FileNotFoundError:
-            raise FileNotFoundError("file '{}' does not exist".format("{}.{}".format(name, self.__extension)))
-        except Exception as ex:
-            raise ReadError("reading '{}' failed - {}".format("{}.{}".format(name, self.__extension), ex))
+        file_path = os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension))
+        stream = open(file_path, 'rb')
+        size = os.path.getsize(file_path)
+        return stream, size
 
     def list(self):
-        try:
-            return os.listdir(self.__storage_path)
-        except Exception as ex:
-            raise ListError("listing files failed - {}".format(ex))
+        return os.listdir(self.__storage_path)
 
     def delete(self, name: str):
-        try:
-            os.remove(os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension)))
-        except Exception as ex:
-            raise DeleteError("deleting '{}' failed - {}".format("{}.{}".format(name, self.__extension), ex))
+        os.remove(os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension)))
