@@ -25,6 +25,7 @@ from .util import getDelay
 import threading
 import datetime
 import requests
+import typing
 import time
 import json
 import io
@@ -86,9 +87,21 @@ class Handler(threading.Thread):
         except Exception as ex:
             raise GetExportError("retrieving export '{}' failed - {}".format(name, ex))
 
-    def listExports(self):
+    def listExports(self) -> typing.List[dict]:
         try:
-            return self.__st_handler.list()
+            files = self.__st_handler.list()
+            exports = list()
+            for file, size in files:
+                exports.append(
+                    {
+                        model.Export.file: file,
+                        model.Export.time: file.rsplit(".", 1)[0],
+                        model.Export.size: size
+                    }
+                )
+            if exports:
+                exports.sort(key=lambda item: item[model.Export.time], reverse=True)
+            return exports
         except Exception as ex:
             raise ListExportsError("listing exports failed - {}".format(ex))
 
