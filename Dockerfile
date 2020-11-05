@@ -2,7 +2,7 @@ FROM python:3-alpine
 
 RUN apk update && apk upgrade && apk add git
 
-RUN mkdir exports
+RUN mkdir backups
 
 WORKDIR /usr/src/app
 
