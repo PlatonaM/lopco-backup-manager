@@ -55,10 +55,11 @@ class RemoveExportError(ExportError):
 
 
 class Handler(threading.Thread):
-    def __init__(self, endpoints: tuple, storage_handler: storage.Handler):
+    def __init__(self, endpoints: tuple, storage_handler: storage.Handler, max_age: int):
         super().__init__(name="backup-worker", daemon=True)
         self.__endpoints = endpoints
         self.__st_handler = storage_handler
+        self.__max_age = max_age
 
     def __getData(self) -> dict:
         data = dict()
@@ -70,6 +71,14 @@ class Handler(threading.Thread):
             for key, value in resp.json().items():
                 data[endpoint][key] = json.loads(value)
         return data
+
+    def __cleanExports(self):
+        files = self.__st_handler.list()
+        for file in files:
+            export = file[0].rsplit(".", 1)[0]
+            age = datetime.datetime.strptime(export, "%Y-%m-%dT%H:%M:%S.%fZ") + datetime.timedelta(days=self.__max_age)
+            if age < datetime.datetime.utcnow():
+                self.__st_handler.delete(export)
 
     def createExport(self):
         try:
@@ -123,3 +132,8 @@ class Handler(threading.Thread):
                 self.createExport()
             except Exception as ex:
                 logger.error("automatic export failed - {}".format(ex))
+            try:
+                logger.info("cleaning old exports ...")
+                self.__cleanExports()
+            except Exception as ex:
+                logger.error("cleaning old exports failed - {}".format(ex))
