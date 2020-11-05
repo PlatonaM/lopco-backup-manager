@@ -45,8 +45,8 @@ app = falcon.API()
 app.req_options.strip_url_path_trailing_slash = True
 
 routes = (
-    ("/exports", api.Exports(export_handler)),
-    ("/exports/{export}", api.Export(export_handler))
+    ("/backups", api.Backups(export_handler, storage_handler)),
+    ("/backups/{backup}", api.Backup(export_handler, storage_handler))
 )
 
 for route in routes:

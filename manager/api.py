@@ -14,11 +14,13 @@
    limitations under the License.
 """
 
-__all__ = ("Exports", "Export")
+__all__ = ("Backups", "Backup")
 
 
 from .logger import getLogger
 from . import export
+from . import storage
+from . import model
 import falcon
 import json
 
@@ -37,14 +39,29 @@ class BadRequest(Exception):
     pass
 
 
-class Exports:
-    def __init__(self, exp_handler: export.Handler):
+class Backups:
+    def __init__(self, exp_handler: export.Handler, st_handler: storage.Handler):
         self.__exp_handler = exp_handler
+        self.__st_handler = st_handler
 
     def on_get(self, req: falcon.request.Request, resp: falcon.response.Response):
         reqDebugLog(req)
         try:
-            resp.body = json.dumps(self.__exp_handler.listExports())
+            files = self.__st_handler.list()
+            backups = list()
+            for file, size in files:
+                name = file.rsplit(".", 1)[0]
+                backups.append(
+                    {
+                        model.Backup.name: name,
+                        model.Backup.time: name.split("-", 1)[-1],
+                        model.Backup.file: file,
+                        model.Backup.size: size
+                    }
+                )
+            if backups:
+                backups.sort(key=lambda item: item[model.Backup.time], reverse=True)
+            resp.body = json.dumps(backups)
             resp.content_type = falcon.MEDIA_JSON
             resp.status = falcon.HTTP_200
         except Exception as ex:
@@ -61,14 +78,15 @@ class Exports:
             reqErrorLog(req, ex)
 
 
-class Export:
-    def __init__(self, exp_handler: export.Handler):
+class Backup:
+    def __init__(self, exp_handler: export.Handler, st_handler: storage.Handler):
         self.__exp_handler = exp_handler
+        self.__st_handler = st_handler
 
-    def on_get(self, req: falcon.request.Request, resp: falcon.response.Response, export):
+    def on_get(self, req: falcon.request.Request, resp: falcon.response.Response, backup):
         reqDebugLog(req)
         try:
-            resp.stream, resp.content_length = self.__exp_handler.getExport(export)
+            resp.stream, resp.content_length = self.__st_handler.read(backup)
             resp.content_type = falcon.MEDIA_JSON
             resp.status = falcon.HTTP_200
         except FileNotFoundError as ex:
@@ -78,10 +96,10 @@ class Export:
             resp.status = falcon.HTTP_500
             reqErrorLog(req, ex)
 
-    def on_delete(self, req: falcon.request.Request, resp: falcon.response.Response, export):
+    def on_delete(self, req: falcon.request.Request, resp: falcon.response.Response, backup):
         reqDebugLog(req)
         try:
-            self.__exp_handler.removeExport(export)
+            self.__st_handler.delete(backup)
             resp.status = falcon.HTTP_200
         except FileNotFoundError as ex:
             resp.status = falcon.HTTP_404
