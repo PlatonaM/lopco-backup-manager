@@ -72,7 +72,7 @@ class Handler(threading.Thread):
                 data[endpoint][key] = json.loads(value)
         return data
 
-    def __cleanExports(self):
+    def __removeOldExports(self):
         files = self.__st_handler.list()
         for file in files:
             export = file[0].rsplit(".", 1)[0]
@@ -134,6 +134,6 @@ class Handler(threading.Thread):
                 logger.error("automatic export failed - {}".format(ex))
             try:
                 logger.info("cleaning old exports ...")
-                self.__cleanExports()
+                self.__removeOldExports()
             except Exception as ex:
                 logger.error("cleaning old exports failed - {}".format(ex))
