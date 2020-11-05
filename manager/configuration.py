@@ -45,6 +45,7 @@ class Conf:
 
     @simple_env_var.section
     class Backup:
+        automatic = True
         interval = 10800
         hour = 1
         minute = 30
