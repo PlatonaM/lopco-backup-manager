@@ -133,7 +133,7 @@ class Handler(threading.Thread):
             except Exception as ex:
                 logger.error("automatic export failed - {}".format(ex))
             try:
-                logger.info("cleaning old exports ...")
+                logger.info("removing exports older than '{}' days ...".format(self.__max_age))
                 self.__removeOldExports()
             except Exception as ex:
-                logger.error("cleaning old exports failed - {}".format(ex))
+                logger.error("removing old exports failed - {}".format(ex))
