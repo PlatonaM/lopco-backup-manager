@@ -115,6 +115,7 @@ class Handler(threading.Thread):
             raise RemoveExportError("removing export '{}' failed - {}".format(name, ex))
 
     def run(self) -> None:
+        logger.info("automatic export enabled")
         while True:
             try:
                 time.sleep(getDelay())
