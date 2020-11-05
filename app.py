@@ -33,7 +33,8 @@ export_handler = export.Handler(
         "{}/{}".format(conf.ProtocolAdapterRegistry.url, conf.ProtocolAdapterRegistry.api),
         "{}/{}".format(conf.PipelineRegistry.url, conf.PipelineRegistry.api)
     ),
-    storage_handler
+    storage_handler,
+    conf.Backup.max_days
 )
 
 if conf.Backup.automatic:
