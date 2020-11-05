@@ -35,7 +35,9 @@ export_handler = export.Handler(
     ),
     storage_handler
 )
-export_handler.start()
+
+if conf.Backup.automatic:
+    export_handler.start()
 
 app = falcon.API()
 
