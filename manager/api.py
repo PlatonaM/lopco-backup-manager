@@ -35,10 +35,6 @@ def reqErrorLog(req, ex):
     logger.error("method='{}' path='{}' - {}".format(req.method, req.path, ex))
 
 
-class BadRequest(Exception):
-    pass
-
-
 class Backups:
     def __init__(self, bk_handler: backup.Handler):
         self.__bk_handler = bk_handler
