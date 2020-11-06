@@ -42,15 +42,6 @@ class CreateExportError(ExportError):
     pass
 
 
-class GetExportError(ExportError):
-    pass
-
-
-class ListExportsError(ExportError):
-    pass
-
-
-class RemoveExportError(ExportError):
     pass
 
 
