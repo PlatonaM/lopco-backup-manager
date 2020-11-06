@@ -71,7 +71,7 @@ class Backups:
     def on_patch(self, req: falcon.request.Request, resp: falcon.response.Response):
         reqDebugLog(req)
         try:
-            self.__exp_handler.createExport()
+            self.__bk_handler.create()
             resp.status = falcon.HTTP_200
         except Exception as ex:
             resp.status = falcon.HTTP_500

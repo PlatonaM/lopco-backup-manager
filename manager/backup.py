@@ -88,7 +88,7 @@ class Handler(threading.Thread):
                 if age < datetime.datetime.utcnow():
                     self.__st_handler.delete(file[0])
 
-    def createExport(self):
+    def create(self):
         try:
             self.__st_handler.write(
                 io.BytesIO(json.dumps(self.__getData()).encode()),
