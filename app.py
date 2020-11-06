@@ -24,7 +24,7 @@ import falcon
 
 initLogger(conf.Logger.level)
 
-storage_handler = storage.Handler(storage_path, "json")
+storage_handler = storage.Handler(storage_path)
 
 export_handler = export.Handler(
     (
