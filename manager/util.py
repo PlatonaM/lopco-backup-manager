@@ -25,24 +25,24 @@ __all__ = ("getDelay", "genHash")
 
 def getDelay():
     x = datetime.datetime.today()
-    if not any((conf.Backup.hour, conf.Backup.minute, conf.Backup.second)):
-        y = x.replace(day=x.day, hour=x.hour, minute=x.minute, second=x.second, microsecond=0) + datetime.timedelta(seconds=conf.Backup.interval)
+    if not any((conf.AutoBackup.hour, conf.AutoBackup.minute, conf.AutoBackup.second)):
+        y = x.replace(day=x.day, hour=x.hour, minute=x.minute, second=x.second, microsecond=0) + datetime.timedelta(seconds=conf.AutoBackup.interval)
         delay = y - x
         return delay.total_seconds()
-    if conf.Backup.second and not conf.Backup.minute and not conf.Backup.hour:
-        y = x.replace(day=x.day, hour=x.hour, minute=x.minute, second=conf.Backup.second, microsecond=0)
+    if conf.AutoBackup.second and not conf.AutoBackup.minute and not conf.AutoBackup.hour:
+        y = x.replace(day=x.day, hour=x.hour, minute=x.minute, second=conf.AutoBackup.second, microsecond=0)
         delta = datetime.timedelta(minutes=1)
-    if conf.Backup.minute and not conf.Backup.second and not conf.Backup.hour:
-        y = x.replace(day=x.day, hour=x.hour, minute=conf.Backup.minute, second=0, microsecond=0)
+    if conf.AutoBackup.minute and not conf.AutoBackup.second and not conf.AutoBackup.hour:
+        y = x.replace(day=x.day, hour=x.hour, minute=conf.AutoBackup.minute, second=0, microsecond=0)
         delta = datetime.timedelta(hours=1)
-    if conf.Backup.minute and conf.Backup.second and not conf.Backup.hour:
-        y = x.replace(day=x.day, hour=x.hour, minute=conf.Backup.minute, second=conf.Backup.second, microsecond=0)
+    if conf.AutoBackup.minute and conf.AutoBackup.second and not conf.AutoBackup.hour:
+        y = x.replace(day=x.day, hour=x.hour, minute=conf.AutoBackup.minute, second=conf.AutoBackup.second, microsecond=0)
         delta = datetime.timedelta(hours=1)
-    if conf.Backup.hour and not conf.Backup.minute and not conf.Backup.second:
-        y = x.replace(day=x.day, hour=conf.Backup.hour, minute=0, second=0, microsecond=0)
+    if conf.AutoBackup.hour and not conf.AutoBackup.minute and not conf.AutoBackup.second:
+        y = x.replace(day=x.day, hour=conf.AutoBackup.hour, minute=0, second=0, microsecond=0)
         delta = datetime.timedelta(days=1)
-    if conf.Backup.hour and any((conf.Backup.minute, conf.Backup.second)):
-        y = x.replace(day=x.day, hour=conf.Backup.hour, minute=conf.Backup.minute or 0, second=conf.Backup.second or 0, microsecond=0)
+    if conf.AutoBackup.hour and any((conf.AutoBackup.minute, conf.AutoBackup.second)):
+        y = x.replace(day=x.day, hour=conf.AutoBackup.hour, minute=conf.AutoBackup.minute or 0, second=conf.AutoBackup.second or 0, microsecond=0)
         delta = datetime.timedelta(days=1)
     delay = y - x
     if delay.total_seconds() <= 0:
