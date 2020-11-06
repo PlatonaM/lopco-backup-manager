@@ -57,6 +57,10 @@ class ListBackupsError(BackupError):
     pass
 
 
+class ApplyBackupError(BackupError):
+    pass
+
+
 class Handler:
     __exp_prefix = "export-"
     __imp_prefix = "import-"
