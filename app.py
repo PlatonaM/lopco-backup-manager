@@ -38,7 +38,7 @@ backup_handler = backup.Handler(
 )
 
 if conf.Backup.automatic:
-    backup_handler.start()
+    backup_handler.auto_bk_thread.start()
 
 app = falcon.API()
 

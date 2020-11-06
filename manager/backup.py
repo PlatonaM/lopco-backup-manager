@@ -57,16 +57,16 @@ class ListBackupsError(BackupError):
     pass
 
 
-class Handler(threading.Thread):
+class Handler:
     __exp_prefix = "export-"
     __imp_prefix = "import-"
     __extension = "json"
 
     def __init__(self, endpoints: tuple, storage_handler: storage.Handler, max_age: int):
-        super().__init__(name="backup-worker", daemon=True)
         self.__endpoints = endpoints
         self.__st_handler = storage_handler
         self.__max_age = max_age
+        self.auto_bk_thread = threading.Thread(name="backup-worker", target=self.__autoBackup, daemon=True)
 
     def __getData(self) -> dict:
         data = dict()
@@ -87,6 +87,21 @@ class Handler(threading.Thread):
                 age = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + datetime.timedelta(days=self.__max_age)
                 if age < datetime.datetime.utcnow():
                     self.__st_handler.delete(file[0])
+
+    def __autoBackup(self):
+        logger.info("automatic backup enabled")
+        while True:
+            try:
+                time.sleep(getDelay())
+                logger.info("starting automatic backup ...")
+                self.create()
+            except Exception as ex:
+                logger.error("automatic backup failed - {}".format(ex))
+            try:
+                logger.info("removing exports older than '{}' days ...".format(self.__max_age))
+                self.__removeOldExports()
+            except Exception as ex:
+                logger.error("removing old exports failed - {}".format(ex))
 
     def create(self):
         try:
@@ -143,17 +158,3 @@ class Handler(threading.Thread):
         except Exception as ex:
             raise ListBackupsError("listing backups failed - {}".format(ex))
 
-    def run(self) -> None:
-        logger.info("automatic backup enabled")
-        while True:
-            try:
-                time.sleep(getDelay())
-                logger.info("starting automatic backup ...")
-                self.create()
-            except Exception as ex:
-                logger.error("automatic backup failed - {}".format(ex))
-            try:
-                logger.info("removing exports older than '{}' days ...".format(self.__max_age))
-                self.__removeOldExports()
-            except Exception as ex:
-                logger.error("removing old exports failed - {}".format(ex))
