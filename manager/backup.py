@@ -43,6 +43,17 @@ class CreateExportError(BackupError):
 
 class AddBackupError(BackupError):
     pass
+
+
+class GetBackupError(BackupError):
+    pass
+
+
+class DeleteBackupError(BackupError):
+    pass
+
+
+class ListBackupsError(BackupError):
     pass
 
 
