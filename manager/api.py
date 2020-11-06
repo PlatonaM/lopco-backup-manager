@@ -73,15 +73,14 @@ class Backups:
 
 
 class Backup:
-    def __init__(self, exp_handler: export.Handler, st_handler: storage.Handler):
-        self.__exp_handler = exp_handler
-        self.__st_handler = st_handler
+    def __init__(self, bk_handler: backup.Handler):
+        self.__bk_handler = bk_handler
 
     def on_get(self, req: falcon.request.Request, resp: falcon.response.Response, backup):
         reqDebugLog(req)
         try:
-            resp.stream, resp.content_length = self.__st_handler.read(backup)
-            resp.downloadable_as = backup
+            resp.stream, resp.content_length, f_name = self.__bk_handler.get(backup)
+            resp.downloadable_as = f_name
             resp.content_type = falcon.MEDIA_JSON
             resp.status = falcon.HTTP_200
         except FileNotFoundError as ex:
@@ -94,7 +93,7 @@ class Backup:
     def on_delete(self, req: falcon.request.Request, resp: falcon.response.Response, backup):
         reqDebugLog(req)
         try:
-            self.__st_handler.delete(backup)
+            self.__bk_handler.delete(backup)
             resp.status = falcon.HTTP_200
         except FileNotFoundError as ex:
             resp.status = falcon.HTTP_404
