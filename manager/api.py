@@ -80,7 +80,7 @@ class Backups:
     def on_post(self, req: falcon.request.Request, resp: falcon.response.Response):
         reqDebugLog(req)
         try:
-            self.__exp_handler.addExport(req.stream)
+            self.__bk_handler.add(req.stream)
             resp.status = falcon.HTTP_200
         except Exception as ex:
             resp.status = falcon.HTTP_500
