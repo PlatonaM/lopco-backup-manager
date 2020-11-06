@@ -18,9 +18,10 @@
 __all__ = ("Handler",)
 
 
-from . import storage
 from .logger import getLogger
 from .util import getDelay
+from . import storage
+from . import model
 import threading
 import datetime
 import requests
