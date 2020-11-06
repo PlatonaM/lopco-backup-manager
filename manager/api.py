@@ -77,6 +77,15 @@ class Backups:
             resp.status = falcon.HTTP_500
             reqErrorLog(req, ex)
 
+    def on_post(self, req: falcon.request.Request, resp: falcon.response.Response):
+        reqDebugLog(req)
+        try:
+            self.__exp_handler.addExport(req.stream)
+            resp.status = falcon.HTTP_200
+        except Exception as ex:
+            resp.status = falcon.HTTP_500
+            reqErrorLog(req, ex)
+
 
 class Backup:
     def __init__(self, exp_handler: export.Handler, st_handler: storage.Handler):
