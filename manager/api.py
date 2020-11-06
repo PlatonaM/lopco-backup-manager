@@ -40,28 +40,13 @@ class BadRequest(Exception):
 
 
 class Backups:
-    def __init__(self, exp_handler: export.Handler, st_handler: storage.Handler):
-        self.__exp_handler = exp_handler
-        self.__st_handler = st_handler
+    def __init__(self, bk_handler: backup.Handler):
+        self.__bk_handler = bk_handler
 
     def on_get(self, req: falcon.request.Request, resp: falcon.response.Response):
         reqDebugLog(req)
         try:
-            files = self.__st_handler.list()
-            backups = list()
-            for file, size in files:
-                name = file.rsplit(".", 1)[0]
-                backups.append(
-                    {
-                        model.Backup.name: name,
-                        model.Backup.time: name.split("-", 1)[-1],
-                        model.Backup.file: file,
-                        model.Backup.size: size
-                    }
-                )
-            if backups:
-                backups.sort(key=lambda item: item[model.Backup.time], reverse=True)
-            resp.body = json.dumps(backups)
+            resp.body = json.dumps(self.__bk_handler.list())
             resp.content_type = falcon.MEDIA_JSON
             resp.status = falcon.HTTP_200
         except Exception as ex:
