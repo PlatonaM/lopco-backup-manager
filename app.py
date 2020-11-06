@@ -27,17 +27,12 @@ initLogger(conf.Logger.level)
 storage_handler = storage.Handler(storage_path)
 
 backup_handler = backup.Handler(
-    (
-        "{}/{}".format(conf.MachineRegistry.url, conf.MachineRegistry.api),
-        "{}/{}".format(conf.WorkerRegistry.url, conf.WorkerRegistry.api),
-        "{}/{}".format(conf.ProtocolAdapterRegistry.url, conf.ProtocolAdapterRegistry.api),
-        "{}/{}".format(conf.PipelineRegistry.url, conf.PipelineRegistry.api)
-    ),
+    [endpoint for endpoint in conf.Backup.endpoints.split(conf.Backup.delimiter)],
     storage_handler,
-    conf.Backup.max_days
+    conf.AutoBackup.max_days
 )
 
-if conf.Backup.automatic:
+if conf.AutoBackup.enabled:
     backup_handler.auto_bk_thread.start()
 
 app = falcon.API()
