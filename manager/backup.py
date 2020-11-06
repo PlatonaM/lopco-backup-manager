@@ -162,3 +162,22 @@ class Handler:
         except Exception as ex:
             raise ListBackupsError("listing backups failed - {}".format(ex))
 
+    def apply(self, backup: str):
+        try:
+            f_name = "{}.{}".format(backup, self.__extension)
+            backup = json.load(self.__st_handler.read(f_name)[0])
+            for endpoint in self.__endpoints:
+                try:
+                    for key, value in backup[endpoint].items():
+                        try:
+                            resp = requests.put(url="{}/{}".format(endpoint, key), json=value)
+                            if not resp.ok:
+                                raise RuntimeError(resp.status_code)
+                        except Exception as ex:
+                            logger.error("restoring '{}' to '{}' failed - {}".format(key, endpoint, ex))
+                except KeyError:
+                    logger.warning("no data for '{}' in backup".format(endpoint))
+        except FileNotFoundError:
+            raise
+        except Exception as ex:
+            raise ApplyBackupError("applying backup failed - {}".format(ex))
