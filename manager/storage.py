@@ -24,21 +24,20 @@ import io
 
 
 class Handler(object):
-    def __init__(self, path, extension, chunk_size_bytes=4096):
+    def __init__(self, path, chunk_size_bytes=4096):
         self.__storage_path = path
-        self.__extension = extension
         self.__chunk_size_bytes = chunk_size_bytes
 
-    def write(self, stream: io.BytesIO, name: str):
-        with open(os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension)), 'wb') as file:
+    def write(self, stream: io.BytesIO, f_name: str):
+        with open(os.path.join(self.__storage_path, f_name), 'wb') as file:
             while True:
                 chunk = stream.read(self.__chunk_size_bytes)
                 if not chunk:
                     break
                 file.write(chunk)
 
-    def read(self, name: str) -> typing.Tuple[typing.BinaryIO, int]:
-        file_path = os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension))
+    def read(self, f_name: str) -> typing.Tuple[typing.BinaryIO, int]:
+        file_path = os.path.join(self.__storage_path, f_name)
         stream = open(file_path, 'rb')
         size = os.path.getsize(file_path)
         return stream, size
@@ -49,5 +48,5 @@ class Handler(object):
             files.append((file, os.path.getsize(os.path.join(self.__storage_path, file))))
         return files
 
-    def delete(self, name: str):
-        os.remove(os.path.join(self.__storage_path, "{}.{}".format(name, self.__extension)))
+    def delete(self, f_name: str):
+        os.remove(os.path.join(self.__storage_path, f_name))
