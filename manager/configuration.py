@@ -24,24 +24,9 @@ import simple_env_var
 class Conf:
 
     @simple_env_var.section
-    class PipelineRegistry:
-        url = "http://pipeline-registry"
-        api = "pipelines"
-
-    @simple_env_var.section
-    class MachineRegistry:
-        url = "http://machine-registry"
-        api = "machines"
-
-    @simple_env_var.section
-    class WorkerRegistry:
-        url = "http://worker-registry"
-        api = "workers"
-
-    @simple_env_var.section
-    class ProtocolAdapterRegistry:
-        url = "http://protocol-adapter-registry"
-        api = "protocol-adapters"
+    class Backup:
+        endpoints = "http://pipeline-registry/pipelines;http://machine-registry/machines;http://worker-registry/workers;http://protocol-adapter-registry/protocol-adapters"
+        delimiter = ";"
 
     @simple_env_var.section
     class AutoBackup:
