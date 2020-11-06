@@ -33,15 +33,16 @@ import io
 logger = getLogger(__name__.split(".", 1)[-1])
 
 
-class ExportError(Exception):
+class BackupError(Exception):
     pass
 
 
-class CreateExportError(ExportError):
+class CreateExportError(BackupError):
     pass
 
 
-class AddExportError(ExportError):
+class AddBackupError(BackupError):
+    pass
     pass
 
 
@@ -92,7 +93,7 @@ class Handler(threading.Thread):
                 "{}{}Z.{}".format(self.__imp_prefix, datetime.datetime.utcnow().isoformat(), self.__extension)
             )
         except Exception as ex:
-            raise AddExportError("adding export failed - {}".format(ex))
+            raise AddBackupError("adding backup failed - {}".format(ex))
 
     def run(self) -> None:
         logger.info("automatic export enabled")
