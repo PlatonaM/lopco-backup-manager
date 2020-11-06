@@ -107,14 +107,14 @@ class Handler(threading.Thread):
             raise AddBackupError("adding backup failed - {}".format(ex))
 
     def run(self) -> None:
-        logger.info("automatic export enabled")
+        logger.info("automatic backup enabled")
         while True:
             try:
                 time.sleep(getDelay())
-                logger.info("starting automatic export ...")
-                self.createExport()
+                logger.info("starting automatic backup ...")
+                self.create()
             except Exception as ex:
-                logger.error("automatic export failed - {}".format(ex))
+                logger.error("automatic backup failed - {}".format(ex))
             try:
                 logger.info("removing exports older than '{}' days ...".format(self.__max_age))
                 self.__removeOldExports()
