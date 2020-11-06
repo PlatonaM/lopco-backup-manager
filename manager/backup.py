@@ -106,6 +106,15 @@ class Handler(threading.Thread):
         except Exception as ex:
             raise AddBackupError("adding backup failed - {}".format(ex))
 
+    def get(self, backup: str):
+        try:
+            f_name = "{}.{}".format(backup, self.__extension)
+            stream, size = self.__st_handler.read(f_name)
+            return stream, size, f_name
+        except FileNotFoundError:
+            raise
+        except Exception as ex:
+            raise GetBackupError("retrieving backup failed - {}".format(ex))
     def run(self) -> None:
         logger.info("automatic backup enabled")
         while True:
