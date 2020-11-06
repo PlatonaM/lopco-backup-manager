@@ -115,6 +115,14 @@ class Handler(threading.Thread):
             raise
         except Exception as ex:
             raise GetBackupError("retrieving backup failed - {}".format(ex))
+
+    def delete(self, backup: str):
+        try:
+            self.__st_handler.delete("{}.{}".format(backup, self.__extension))
+        except FileNotFoundError:
+            raise
+        except Exception as ex:
+            raise DeleteBackupError("removing backup failed - {}".format(ex))
     def run(self) -> None:
         logger.info("automatic backup enabled")
         while True:
