@@ -44,8 +44,8 @@ class Conf:
         api = "protocol-adapters"
 
     @simple_env_var.section
-    class Backup:
-        automatic = True
+    class AutoBackup:
+        enabled = True
         max_days = 60
         interval = 10800
         hour = 1
