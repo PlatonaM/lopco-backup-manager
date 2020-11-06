@@ -123,6 +123,27 @@ class Handler(threading.Thread):
             raise
         except Exception as ex:
             raise DeleteBackupError("removing backup failed - {}".format(ex))
+
+    def list(self) -> list:
+        try:
+            files = self.__st_handler.list()
+            backups = list()
+            for file, size in files:
+                name = file.rsplit(".", 1)[0]
+                backups.append(
+                    {
+                        model.Backup.name: name,
+                        model.Backup.time: name.split("-", 1)[-1],
+                        model.Backup.file: file,
+                        model.Backup.size: size
+                    }
+                )
+            if backups:
+                backups.sort(key=lambda item: item[model.Backup.time], reverse=True)
+            return backups
+        except Exception as ex:
+            raise ListBackupsError("listing backups failed - {}".format(ex))
+
     def run(self) -> None:
         logger.info("automatic backup enabled")
         while True:
