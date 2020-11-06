@@ -87,7 +87,7 @@ class Handler:
         files = self.__st_handler.list()
         for file in files:
             if self.__exp_prefix in file[0]:
-                timestamp = file[0].rsplit(".", 1)[0]
+                timestamp = file[0].rsplit(".", 1)[0].split("-", 1)[-1]
                 age = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + datetime.timedelta(days=self.__max_age)
                 if age < datetime.datetime.utcnow():
                     self.__st_handler.delete(file[0])
