@@ -42,11 +42,13 @@ class CreateExportError(ExportError):
     pass
 
 
+class AddExportError(ExportError):
     pass
 
 
 class Handler(threading.Thread):
     __exp_prefix = "export-"
+    __imp_prefix = "import-"
     __extension = "json"
 
     def __init__(self, endpoints: tuple, storage_handler: storage.Handler, max_age: int):
@@ -83,6 +85,15 @@ class Handler(threading.Thread):
             )
         except Exception as ex:
             raise CreateExportError("creating export failed - {}".format(ex))
+
+    def addExport(self, stream: io.BytesIO):
+        try:
+            return self.__st_handler.write(
+                stream,
+                "{}{}Z.{}".format(self.__imp_prefix, datetime.datetime.utcnow().isoformat(), self.__extension)
+            )
+        except Exception as ex:
+            raise AddExportError("adding export failed - {}".format(ex))
 
     def run(self) -> None:
         logger.info("automatic export enabled")
