@@ -86,6 +86,18 @@ class Backup:
             resp.status = falcon.HTTP_500
             reqErrorLog(req, ex)
 
+    def on_patch(self, req: falcon.request.Request, resp: falcon.response.Response, backup):
+        reqDebugLog(req)
+        try:
+            self.__bk_handler.apply(backup)
+            resp.status = falcon.HTTP_200
+        except FileNotFoundError as ex:
+            resp.status = falcon.HTTP_404
+            reqErrorLog(req, ex)
+        except Exception as ex:
+            resp.status = falcon.HTTP_500
+            reqErrorLog(req, ex)
+
     def on_delete(self, req: falcon.request.Request, resp: falcon.response.Response, backup):
         reqDebugLog(req)
         try:
