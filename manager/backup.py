@@ -62,7 +62,7 @@ class Handler:
     __imp_prefix = "import-"
     __extension = "json"
 
-    def __init__(self, endpoints: tuple, storage_handler: storage.Handler, max_age: int):
+    def __init__(self, endpoints: list, storage_handler: storage.Handler, max_age: int):
         self.__endpoints = endpoints
         self.__st_handler = storage_handler
         self.__max_age = max_age
