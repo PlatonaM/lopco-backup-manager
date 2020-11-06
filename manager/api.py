@@ -87,6 +87,7 @@ class Backup:
         reqDebugLog(req)
         try:
             resp.stream, resp.content_length = self.__st_handler.read(backup)
+            resp.downloadable_as = backup
             resp.content_type = falcon.MEDIA_JSON
             resp.status = falcon.HTTP_200
         except FileNotFoundError as ex:
