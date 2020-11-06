@@ -26,7 +26,7 @@ initLogger(conf.Logger.level)
 
 storage_handler = storage.Handler(storage_path)
 
-export_handler = export.Handler(
+backup_handler = backup.Handler(
     (
         "{}/{}".format(conf.MachineRegistry.url, conf.MachineRegistry.api),
         "{}/{}".format(conf.WorkerRegistry.url, conf.WorkerRegistry.api),
@@ -38,15 +38,15 @@ export_handler = export.Handler(
 )
 
 if conf.Backup.automatic:
-    export_handler.start()
+    backup_handler.start()
 
 app = falcon.API()
 
 app.req_options.strip_url_path_trailing_slash = True
 
 routes = (
-    ("/backups", api.Backups(export_handler, storage_handler)),
-    ("/backups/{backup}", api.Backup(export_handler, storage_handler))
+    ("/backups", api.Backups(backup_handler)),
+    ("/backups/{backup}", api.Backup(backup_handler))
 )
 
 for route in routes:
