@@ -55,7 +55,8 @@ class RemoveExportError(ExportError):
 
 
 class Handler(threading.Thread):
-    __prefix = "export-"
+    __exp_prefix = "export-"
+    __extension = "json"
 
     def __init__(self, endpoints: tuple, storage_handler: storage.Handler, max_age: int):
         super().__init__(name="backup-worker", daemon=True)
@@ -77,17 +78,17 @@ class Handler(threading.Thread):
     def __removeOldExports(self):
         files = self.__st_handler.list()
         for file in files:
-            if self.__prefix in file[0]:
-                export = file[0].rsplit(".", 1)[0]
-                age = datetime.datetime.strptime(export, "%Y-%m-%dT%H:%M:%S.%fZ") + datetime.timedelta(days=self.__max_age)
+            if self.__exp_prefix in file[0]:
+                timestamp = file[0].rsplit(".", 1)[0]
+                age = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ") + datetime.timedelta(days=self.__max_age)
                 if age < datetime.datetime.utcnow():
-                    self.__st_handler.delete(export)
+                    self.__st_handler.delete(file[0])
 
     def createExport(self):
         try:
             self.__st_handler.write(
                 io.BytesIO(json.dumps(self.__getData()).encode()),
-                "{}{}Z".format(self.__prefix, datetime.datetime.utcnow().isoformat())
+                "{}{}Z.{}".format(self.__exp_prefix, datetime.datetime.utcnow().isoformat(), self.__extension)
             )
         except Exception as ex:
             raise CreateExportError("creating export failed - {}".format(ex))
