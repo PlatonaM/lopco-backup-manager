@@ -20,6 +20,5 @@ __all__ = ("Backup",)
 
 class Backup:
     name = "name"
-    file = "file"
     time = "time"
     size = "size"

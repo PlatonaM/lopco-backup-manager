@@ -134,7 +134,6 @@ class Handler(threading.Thread):
                     {
                         model.Backup.name: name,
                         model.Backup.time: name.split("-", 1)[-1],
-                        model.Backup.file: file,
                         model.Backup.size: size
                     }
                 )
