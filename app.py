@@ -17,7 +17,7 @@
 from manager.logger import initLogger
 from manager.configuration import conf, storage_path
 from manager import storage
-from manager import export
+from manager import backup
 from manager import api
 import falcon
 
