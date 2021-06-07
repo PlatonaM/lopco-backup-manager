@@ -1,3 +1,30 @@
+## lopco-backup-manager
+
+Automatic and manual backups of data stored by the [pipeline](https://github.com/PlatonaM/lopco-pipeline-registry), [machine](https://github.com/PlatonaM/lopco-machine-registry), [worker](https://github.com/PlatonaM/lopco-worker-registry) and [protocol-adapter](https://github.com/PlatonaM/lopco-protocol-adapter-registry) registries.
+Backups can be exported and imported and are stored for a time specified by the user. The management of the backups is done via HTTP API.
+
+### Configuration
+
+`CONF_LOGGER_LEVEL`: Set logging level to `info`, `warning`, `error`, `critical` or `debug`.
+
+`CONF_BACKUP_ENDPOINTS`: List of URLs of the services to be backed up.
+
+`CONF_BACKUP_DELIMITER`: Delimiter used to separate backup endpoints.
+
+`CONF_AUTOBACKUP_ENABLED`: Set if backups should be created automatically.
+
+`CONF_AUTOBACKUP_MAX_DAYS`: Backups older than the set amount of days will be deleted.
+
+`CONF_AUTOBACKUP_INTERVAL`: Determines the interval at which backups are automatically created if `CONF_AUTOBACKUP_HOUR`, `CONF_AUTOBACKUP_MINUTE` and `CONF_AUTOBACKUP_SECOND` are not set.
+
+`CONF_AUTOBACKUP_HOUR`: Set the hour of the day when a backup is automatically created.
+
+`CONF_AUTOBACKUP_MINUTE`: Set the minutes of an hour when a backup is automatically created.
+
+`CONF_AUTOBACKUP_SECOND`: Set the seconds of a minute when a backup is automatically created.
+
+### API
+
 #### /backups
 
 **GET**
